@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - default
+    ports:
+      - "80:9000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DOCKER=true
+      - POSTGRES_PASSWORD=miha0904
+      - POSTGRES_USER=chef
+      - POSTGRES_DB=cook
+      - POSTGRES_HOST=db
+    entrypoint: ["/app/wait-for-it.sh", "db:5433", "--", "./main"]
+    command: [ "/app/main" ]
+
+  db:
+    image: postgres:latest
+    networks:
+      default:
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U chef -d cook" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=miha0904
+      - POSTGRES_USER=chef
+      - POSTGRES_DB=cook
+    expose:
+      - "5433"
+
+    ports:
+      - "5433:5432"
+networks:
+  default:

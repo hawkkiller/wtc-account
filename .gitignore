@@ -1,0 +1,5 @@
+/.database/
+/vendor/
+/go.sum
+/.idea/
+/docs
