@@ -1,34 +1,22 @@
 package api
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/hawkkiller/wtc-account/api/handler"
 	customMiddleware "github.com/hawkkiller/wtc-account/api/middleware"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"net/http"
 )
 
-type CustomValidator struct {
-	validator *validator.Validate
+type AccountService struct {
+	*echo.Echo
 }
 
-func (cv *CustomValidator) Validate(i interface{}) error {
-	if err := cv.validator.Struct(i); err != nil {
-		// Optionally, you could return the error to give each route more control over the status code
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	return nil
-}
-
-// SetupApi Applies middlewares and sets handlers
-func SetupApi() *echo.Echo {
+// CreateApi Applies middlewares and sets handlers
+func CreateApi() (s *AccountService) {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
-	e.Validator = &CustomValidator{validator: validator.New()}
 
 	api := e.Group("/api/v1/account-service")
 
@@ -44,5 +32,5 @@ func SetupApi() *echo.Echo {
 
 	api.POST("/register", handler.Register)
 
-	return e
+	return &AccountService{e}
 }

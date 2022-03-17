@@ -25,7 +25,7 @@ import (
 func main() {
 	env.SetupEnv()
 	database.SetupDB()
-	server := api.SetupApi()
+	server := api.CreateApi()
 
 	go func() {
 		port := os.Getenv("PORT")
@@ -40,8 +40,7 @@ func main() {
 	}()
 
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	signal.Notify(c, os.Kill)
+	signal.Notify(c, os.Interrupt, os.Kill)
 
 	// Block until a signal is received.
 	sig := <-c
