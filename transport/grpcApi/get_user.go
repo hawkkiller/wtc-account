@@ -2,7 +2,7 @@ package grpcApi
 
 import (
 	"context"
-	api "github.com/hawkkiller/wtc-account-service-api/api"
+	"github.com/hawkkiller/wtc-account-service-api/api"
 	internal "github.com/hawkkiller/wtc-account/internal/database"
 	"github.com/hawkkiller/wtc-account/internal/model"
 )
