@@ -8,7 +8,8 @@ import (
 	"github.com/happierall/l"
 	"github.com/hawkkiller/wtc-account/internal/database"
 	"github.com/hawkkiller/wtc-account/internal/env"
-	api "github.com/hawkkiller/wtc-account/transport/httpApi"
+	grpcApi "github.com/hawkkiller/wtc-account/transport/grpcApi"
+	httpApi "github.com/hawkkiller/wtc-account/transport/httpApi"
 )
 
 // @title WTC ACCOUNT SERVICE
@@ -25,10 +26,19 @@ import (
 func main() {
 	env.SetupEnv()
 	database.SetupDB()
-	server := api.NewServerHTTP()
+	httpServer := httpApi.NewServerHTTP()
+	grpcServer := grpcApi.NewServerGRPC()
 
 	go func() {
-		err := server.StartServerHTTP()
+		err := httpServer.StartServerHTTP()
+		if err != nil {
+			l.Print(err)
+			os.Exit(1)
+		}
+	}()
+
+	go func() {
+		err := grpcServer.StartServerGRPC()
 		if err != nil {
 			l.Print(err)
 			os.Exit(1)
