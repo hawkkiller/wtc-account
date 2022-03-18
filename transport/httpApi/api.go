@@ -1,19 +1,23 @@
 package api
 
 import (
-	"github.com/hawkkiller/wtc-account/api/handler"
-	customMiddleware "github.com/hawkkiller/wtc-account/api/middleware"
+	"fmt"
+	"os"
+
+	"github.com/hawkkiller/wtc-account/transport/httpApi/handler"
+	customMiddleware "github.com/hawkkiller/wtc-account/transport/httpApi/middleware"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
-type AccountService struct {
+type AccountServerHTTP struct {
 	*echo.Echo
+	Port string
 }
 
-// CreateApi Applies middlewares and sets handlers
-func CreateApi() (s *AccountService) {
+// NewServerHTTP Applies middlewares and sets handlers
+func NewServerHTTP() (s *AccountServerHTTP) {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -32,5 +36,17 @@ func CreateApi() (s *AccountService) {
 
 	api.POST("/register", handler.Register)
 
-	return &AccountService{e}
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9000"
+	}
+
+	return &AccountServerHTTP{e, port}
+}
+
+func (s *AccountServerHTTP) StartServerHTTP() error {
+
+	port := fmt.Sprintf(":%s", s.Port)
+
+	return s.Start(port)
 }

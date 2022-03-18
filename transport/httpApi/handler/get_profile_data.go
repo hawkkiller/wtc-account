@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"net/http"
+
 	internal "github.com/hawkkiller/wtc-account/internal/database"
 	"github.com/hawkkiller/wtc-account/internal/model"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 // GetProfileData godoc

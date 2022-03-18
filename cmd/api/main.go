@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"github.com/happierall/l"
-	"github.com/hawkkiller/wtc-account/api"
-	"github.com/hawkkiller/wtc-account/internal/database"
-	"github.com/hawkkiller/wtc-account/internal/env"
 	"log"
 	"os"
 	"os/signal"
+
+	"github.com/happierall/l"
+	"github.com/hawkkiller/wtc-account/internal/database"
+	"github.com/hawkkiller/wtc-account/internal/env"
+	api "github.com/hawkkiller/wtc-account/transport/httpApi"
 )
 
 // @title WTC ACCOUNT SERVICE
@@ -25,14 +25,10 @@ import (
 func main() {
 	env.SetupEnv()
 	database.SetupDB()
-	server := api.CreateApi()
+	server := api.NewServerHTTP()
 
 	go func() {
-		port := os.Getenv("PORT")
-		if port == "" {
-			port = "9000"
-		}
-		err := server.Start(fmt.Sprintf(":%s", port))
+		err := server.StartServerHTTP()
 		if err != nil {
 			l.Print(err)
 			os.Exit(1)
